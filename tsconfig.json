@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+
+    },
+    "lib": [
+      "ESNext"
+    ],
+    "allowJs": false,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
+    "target": "ES5",
+    "module": "ESNext",
+    "removeComments": false,
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "outDir": "dist/",
+    "resolveJsonModule": true,
+    "checkJs": false,
+    "typeRoots": [
+      "node_modules/@types/"
+    ],
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "sourceMap": true,
+    "incremental": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "moduleResolution": "node"
+  },
+  "include": [
+    "src/"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ]
+}
