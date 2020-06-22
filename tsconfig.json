@@ -11,7 +11,7 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
-    "target": "ES5",
+    "target": "ES6",
     "module": "ESNext",
     "removeComments": false,
     "declaration": true,

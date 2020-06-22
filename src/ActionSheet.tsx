@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {ReactElement} from 'react';
 import {
   ActionSheetIOS,
   Animated,
@@ -10,10 +11,10 @@ import {
   Text,
   TouchableHighlight,
   View,
+  ViewStyle,
 } from 'react-native';
-import {PLATFORM_IS_IOS} from 'platform';
-import defaultStyles, {ActionSheetStyles} from 'styles';
-import {ReactElement} from 'react';
+import {PLATFORM_IS_IOS} from './platform';
+import defaultStyles, {ActionSheetStyles} from './styles';
 
 const WARN_COLOR: string = '#FF3B30';
 const MAX_HEIGHT: number = Dimensions.get('window').height * 0.7;
@@ -97,7 +98,7 @@ export interface ActionSheetRef {
 const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
   (props, ref) => {
     const {
-      styles,
+      styles = {},
       cancelButtonIndex,
       options,
       title,
@@ -112,11 +113,10 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
 
     const translateY: number = React.useMemo(() => {
       const getHeight = (name: keyof ActionSheetStyles) => {
-        const style: StyleProp<any> =
-          (styles ?? {})[name] ?? defaultStyles[name];
+        const style: StyleProp<any> = styles[name] ?? defaultStyles[name];
         let h: number = 0;
         ['height', 'marginTop', 'marginBottom'].forEach((attrName: string) => {
-          if (typeof style[attrName] !== 'undefined') {
+          if (typeof style[attrName] === 'number') {
             h += style[attrName];
           }
         });
@@ -138,10 +138,14 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
       }
 
       if (height > MAX_HEIGHT) {
-        setIsScrollEnabled(true);
+        if (typeof setIsScrollEnabled === 'function') {
+          setIsScrollEnabled(true);
+        }
         height = MAX_HEIGHT;
       } else {
-        setIsScrollEnabled(false);
+        if (typeof setIsScrollEnabled === 'function') {
+          setIsScrollEnabled(false);
+        }
       }
 
       return height;
@@ -152,11 +156,11 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
         Object.entries(defaultStyles).map(([key, value]) => {
           if (styles && styles.hasOwnProperty(key)) {
             return [
-              value,
-              styles[key as keyof ActionSheetStyles] as StyleProp<any>,
+              key,
+              [value, styles[key as keyof ActionSheetStyles] as StyleProp<any>],
             ];
           }
-          return value;
+          return [key, [value] as StyleProp<any>];
         }),
       ) as ActionSheetStyles;
     }, [styles]);
@@ -187,17 +191,27 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
       [animation, onPress, translateY],
     );
 
+    const handleShow = React.useCallback(() => {
+      setIsVisible(true);
+      Animated.timing(animation, {
+        toValue: 0,
+        useNativeDriver: true,
+        duration: 250,
+        easing: Easing.out(Easing.ease),
+      }).start();
+    }, [animation]);
+
     /**
      * Add action sheet handlers for Ref
      */
     React.useImperativeHandle(ref, () => ({
-      hide(index: number): any {
+      hide: (index: number): any => {
         if (PLATFORM_IS_IOS) {
           return;
         }
         handleHide(index)();
       },
-      show(): any {
+      show: (): any => {
         if (PLATFORM_IS_IOS) {
           const {onPress: callback, ...iosProps} = props;
           if (typeof callback === 'function') {
@@ -208,21 +222,15 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
           }
           return;
         }
-        setIsVisible(true);
-        Animated.timing(animation, {
-          toValue: 0,
-          useNativeDriver: true,
-          duration: 250,
-          easing: Easing.out(Easing.ease),
-        }).start();
+        handleShow();
       },
     }));
 
     const renderButton = React.useCallback(
-      (title: string, index: number) => {
+      (buttonTitle: string, index: number) => {
         const fontColor =
           destructiveButtonIndex === index ? WARN_COLOR : tintColor;
-        const buttonBoxStyle: StyleProp<any> =
+        const buttonBoxStyle: StyleProp<ViewStyle> =
           cancelButtonIndex === index
             ? combinedStyles.cancelButtonBox
             : combinedStyles.buttonBox;
@@ -234,11 +242,11 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
             style={buttonBoxStyle}
             onPress={handleHide(index)}
           >
-            {React.isValidElement(title) ? (
-              title
+            {React.isValidElement(buttonTitle) ? (
+              buttonTitle
             ) : (
               <Text style={[combinedStyles.buttonText, {color: fontColor}]}>
-                {title}
+                {buttonTitle}
               </Text>
             )}
           </TouchableHighlight>
@@ -304,7 +312,7 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
               </View>
             )}
             <ScrollView scrollEnabled={isScrollEnabled}>
-              {options.filter((buttonTitle, buttonIndex) => {
+              {options.map((buttonTitle, buttonIndex) => {
                 if (buttonIndex === cancelButtonIndex) {
                   return null;
                 }
