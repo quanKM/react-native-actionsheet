@@ -1,7 +1,5 @@
 import {StyleProp, StyleSheet, TextStyle, ViewStyle} from 'react-native';
 
-export const hairlineWidth = StyleSheet.hairlineWidth;
-
 export interface ActionSheetStyles {
   overlay: StyleProp<ViewStyle>;
 
@@ -32,14 +30,18 @@ const styles: ActionSheetStyles = {
     bottom: 0,
     left: 0,
     opacity: 0.4,
-    backgroundColor: '#000',
+    backgroundColor: '#000000',
   },
   wrapper: {
     flex: 1,
     flexDirection: 'row',
+    width: '100%',
   },
   body: {
     flex: 1,
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
     alignSelf: 'flex-end',
     backgroundColor: '#e5e5e5',
   },
@@ -68,7 +70,7 @@ const styles: ActionSheetStyles = {
   },
   buttonBox: {
     height: 50,
-    marginTop: hairlineWidth,
+    marginTop: StyleSheet.hairlineWidth as number,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',

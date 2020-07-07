@@ -2,6 +2,7 @@ import * as React from 'react';
 import {ReactElement} from 'react';
 import {
   ActionSheetIOS,
+  ActionSheetIOSOptions,
   Animated,
   Dimensions,
   Easing,
@@ -116,7 +117,7 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
         const style: StyleProp<any> = styles[name] ?? defaultStyles[name];
         let h: number = 0;
         ['height', 'marginTop', 'marginBottom'].forEach((attrName: string) => {
-          if (typeof style[attrName] === 'number') {
+          if (typeof style[attrName] === 'number' && !Number.isNaN(style[attrName])) {
             h += style[attrName];
           }
         });
@@ -151,89 +152,90 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
       return height;
     }, [styles, cancelButtonIndex, message, options, title]);
 
-    const combinedStyles: ActionSheetStyles = React.useMemo(() => {
-      return Object.fromEntries(
-        Object.entries(defaultStyles).map(([key, value]) => {
-          if (styles && styles.hasOwnProperty(key)) {
-            return [
-              key,
-              [value, styles[key as keyof ActionSheetStyles] as StyleProp<any>],
-            ];
+    const combinedStyles: Partial<ActionSheetStyles> = React.useMemo(() => {
+      const combinedStyles: Partial<ActionSheetStyles> = {};
+      Object
+        .keys(defaultStyles)
+        .forEach(<P extends keyof ActionSheetStyles>(key: string) => {
+          if (key.match(/text/i)) {
+            combinedStyles[key as P]= {
+              ...defaultStyles[key as P] as {},
+              ...(styles[key as P] ?? {} as StyleProp<any>),
+            };
+            return;
           }
-          return [key, [value] as StyleProp<any>];
-        }),
-      ) as ActionSheetStyles;
+          combinedStyles[key as P] = [
+            defaultStyles[key as P],
+          ];
+          if (styles[key as P]) {
+            (combinedStyles[key as P] as StyleProp<any>).push(styles[key as P]);
+          }
+        });
+      return combinedStyles;
     }, [styles]);
 
-    const [animation] = React.useState(new Animated.Value(translateY));
+    const [animation] = React.useState<Animated.Value>(new Animated.Value(translateY));
 
-    const [isScrollEnabled, setIsScrollEnabled] = React.useState<boolean>(
-      false,
+    const [isScrollEnabled, setIsScrollEnabled] = React.useState<boolean>(false);
+
+    const handleCancel = React.useCallback(
+      () => {
+        setIsVisible(false);
+      },
+      [],
     );
-
-    const handleCancel = React.useCallback(() => {
-      setIsVisible(false);
-    }, []);
 
     const handleHide = React.useCallback(
       (index: number) => () => {
-        Animated.timing(animation, {
-          toValue: translateY,
-          useNativeDriver: true,
-          duration: 200,
-        }).start(() => {
-          setIsVisible(false);
-          if (typeof onPress === 'function') {
-            onPress(index);
-          }
-        });
+        Animated
+          .timing(animation, {
+            toValue: translateY,
+            useNativeDriver: true,
+            duration: 200,
+          })
+          .start(() => {
+            setIsVisible(false);
+            if (typeof onPress === 'function') {
+              onPress(index);
+            }
+          });
       },
       [animation, onPress, translateY],
     );
 
-    const handleShow = React.useCallback(() => {
-      setIsVisible(true);
-      Animated.timing(animation, {
-        toValue: 0,
-        useNativeDriver: true,
-        duration: 250,
-        easing: Easing.out(Easing.ease),
-      }).start();
-    }, [animation]);
+    const handleShow = React.useCallback(
+      () => {
+        setIsVisible(true);
+        Animated
+          .timing(animation, {
+            toValue: 0,
+            useNativeDriver: true,
+            duration: 250,
+            easing: Easing.out(Easing.ease),
+          })
+          .start();
+      },
+      [animation],
+    );
 
     /**
      * Add action sheet handlers for Ref
      */
     React.useImperativeHandle(ref, () => ({
-      hide: (index: number): any => {
-        if (PLATFORM_IS_IOS) {
-          return;
-        }
+      hide: (index: number) => {
         handleHide(index)();
       },
-      show: (): any => {
-        if (PLATFORM_IS_IOS) {
-          const {onPress: callback, ...iosProps} = props;
-          if (typeof callback === 'function') {
-            ActionSheetIOS.showActionSheetWithOptions(
-              iosProps as any,
-              callback as (index: number) => void,
-            );
-          }
-          return;
-        }
+      show: () => {
         handleShow();
       },
     }));
 
     const renderButton = React.useCallback(
       (buttonTitle: string, index: number) => {
-        const fontColor =
-          destructiveButtonIndex === index ? WARN_COLOR : tintColor;
-        const buttonBoxStyle: StyleProp<ViewStyle> =
-          cancelButtonIndex === index
-            ? combinedStyles.cancelButtonBox
-            : combinedStyles.buttonBox;
+        const fontColor = destructiveButtonIndex === index ? WARN_COLOR : tintColor;
+        const buttonBoxStyle: StyleProp<ViewStyle> = cancelButtonIndex === index
+          ? combinedStyles.cancelButtonBox
+          : combinedStyles.buttonBox;
         return (
           <TouchableHighlight
             key={index}
@@ -245,7 +247,10 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
             {React.isValidElement(buttonTitle) ? (
               buttonTitle
             ) : (
-              <Text style={[combinedStyles.buttonText, {color: fontColor}]}>
+              <Text style={{
+                ...combinedStyles.buttonText as {},
+                color: fontColor,
+              }}>
                 {buttonTitle}
               </Text>
             )}
@@ -264,10 +269,6 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
       ],
     );
 
-    if (PLATFORM_IS_IOS) {
-      return null;
-    }
-
     return (
       <Modal
         visible={isVisible}
@@ -275,9 +276,9 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
         transparent
         onRequestClose={handleCancel}
       >
-        <View style={[defaultStyles.wrapper, styles?.wrapper]}>
+        <View style={combinedStyles.wrapper}>
           <Text
-            style={[defaultStyles.overlay, styles?.overlay]}
+            style={combinedStyles.overlay}
             onPress={handleCancel}
           />
           <Animated.View
@@ -294,7 +295,7 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
             ]}
           >
             {title && (
-              <View style={[defaultStyles.titleBox, styles?.titleBox]}>
+              <View style={combinedStyles.titleBox}>
                 {React.isValidElement(title) ? (
                   title
                 ) : (
@@ -330,7 +331,7 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
 ActionSheet.defaultProps = {
   tintColor: '#007AFF',
   buttonUnderlayColor: '#F4F4F4',
-  onPress: () => {
+  onPress() {
     // Do nothing
   },
 };

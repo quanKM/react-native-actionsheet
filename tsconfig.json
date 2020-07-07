@@ -1,36 +1,35 @@
 {
   "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
     "baseUrl": "src",
-    "paths": {
-
-    },
+    "checkJs": false,
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "esModuleInterop": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "jsx": "react-native",
     "lib": [
       "ESNext"
     ],
-    "allowJs": false,
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "alwaysStrict": true,
-    "target": "ES6",
     "module": "ESNext",
-    "removeComments": false,
-    "declaration": true,
-    "emitDeclarationOnly": false,
+    "moduleResolution": "node",
+    "noEmit": false,
     "outDir": "dist/",
+    "paths": {},
+    "removeComments": false,
     "resolveJsonModule": true,
-    "checkJs": false,
-    "typeRoots": [
-      "node_modules/@types/"
-    ],
-    "strictNullChecks": true,
-    "esModuleInterop": true,
-    "jsx": "react-native",
-    "sourceMap": true,
-    "incremental": true,
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "isolatedModules": true,
-    "moduleResolution": "node"
+    "sourceMap": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "target": "ES6",
+    "typeRoots": [
+      "node_modules/@types/"
+    ]
   },
   "include": [
     "src/"
