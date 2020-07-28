@@ -11,9 +11,9 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import {PLATFORM_IS_IOS} from 'config/platform';
-import defaultStyles, {ActionSheetStyles} from 'config/styles';
 import {ReactElement} from 'react';
+import {PLATFORM_IS_IOS} from './config/platform';
+import defaultStyles, {ActionSheetStyles} from './config/styles';
 
 const WARN_COLOR: string = '#FF3B30';
 const MAX_HEIGHT: number = Dimensions.get('window').height * 0.7;

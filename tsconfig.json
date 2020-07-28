@@ -16,7 +16,7 @@
     ],
     "module": "ESNext",
     "moduleResolution": "node",
-    "outDir": "dist/",
+    "outDir": "./dist/",
     "paths": {
       "config": [
         "./src/config/"

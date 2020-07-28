@@ -1,0 +1,12 @@
+.git/
+.idea/
+.vscode/
+.vs/
+.gitignore
+.npmignore
+.npmrc
+.eslintrc.js
+.prettierrc.js
+README.md
+yarn.lock
+node_modules/

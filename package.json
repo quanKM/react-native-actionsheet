@@ -1,24 +1,22 @@
 {
   "name": "react-native-actionsheet",
-  "version": "2.5.0",
+  "version": "2.5.10",
   "description": "Cross platform ActionSheet. This component implements a custom ActionSheet  and provides the same way to drawing it on the defferent platforms(iOS and Android). Actually, In order to keep the best effect, it still uses the ActionSheetIOS on iOS.",
-  "main": "./index.js",
-  "module": "./index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "scripts": {
     "lint": "standard src/**/*.{ts,tsx}",
     "test": "jest --no-cache",
     "watch": "NODE_ENV=development tsc -w",
-    "build": "NODE_ENV=production tsc",
     "prebuild": "rm -rf dist/",
-    "postbuild": "run-s cp-files",
-    "cp-files": "cp package.json README.md dist/"
+    "build": "NODE_ENV=production tsc"
   },
   "standard": {
     "parser": "@typescript-eslint/parser"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beefe/react-native-actionsheet.git"
+    "url": "git+https://github.com/thanhtunguet/react-native-actionsheet.git"
   },
   "keywords": [
     "actionsheet",
@@ -28,15 +26,15 @@
     "react-native-actionsheet",
     "custom-action-sheet"
   ],
-  "author": "xiaoyann",
+  "author": "thanhtunguet <ht@thanhtunguet.info>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/beefe/react-native-actionsheet/issues"
+    "url": "https://github.com/thanhtunguet/react-native-actionsheet/issues"
   },
-  "homepage": "https://github.com/beefe/react-native-actionsheet#readme",
+  "homepage": "https://github.com/thanhtunguet/react-native-actionsheet#readme",
   "peerDependencies": {
-    "react": "^16.13.1",
-    "react-native": "^0.62.2"
+    "react": "*",
+    "react-native": "*"
   },
   "devDependencies": {
     "@react-native-community/eslint-config": "^2.0.0",
