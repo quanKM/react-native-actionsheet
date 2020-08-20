@@ -109,7 +109,9 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
     } = props;
 
     const [isVisible, setIsVisible] = React.useState<boolean>(false);
-
+    const [isScrollEnabled, setIsScrollEnabled] = React.useState<boolean>(
+      false,
+    );
     const translateY: number = React.useMemo(() => {
       const getHeight = (name: keyof ActionSheetStyles) => {
         const style: StyleProp<any> =
@@ -145,7 +147,14 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
       }
 
       return height;
-    }, [styles, cancelButtonIndex, message, options, title]);
+    }, [
+      styles,
+      cancelButtonIndex,
+      message,
+      options,
+      title,
+      setIsScrollEnabled,
+    ]);
 
     const combinedStyles: ActionSheetStyles = React.useMemo(() => {
       return Object.fromEntries(
@@ -162,10 +171,6 @@ const ActionSheet = React.forwardRef<ActionSheetRef, ActionSheetProps>(
     }, [styles]);
 
     const [animation] = React.useState(new Animated.Value(translateY));
-
-    const [isScrollEnabled, setIsScrollEnabled] = React.useState<boolean>(
-      false,
-    );
 
     const handleCancel = React.useCallback(() => {
       setIsVisible(false);
