@@ -18,6 +18,7 @@ var MAX_HEIGHT = Dimensions.get('window').height * 0.7;
 var ActionSheet = React.forwardRef(function (props, ref) {
     var styles = props.styles, cancelButtonIndex = props.cancelButtonIndex, options = props.options, title = props.title, message = props.message, onPress = props.onPress, destructiveButtonIndex = props.destructiveButtonIndex, tintColor = props.tintColor, buttonUnderlayColor = props.buttonUnderlayColor;
     var _a = React.useState(false), isVisible = _a[0], setIsVisible = _a[1];
+    var _b = React.useState(false), isScrollEnabled = _b[0], setIsScrollEnabled = _b[1];
     var translateY = React.useMemo(function () {
         var getHeight = function (name) {
             var _a;
@@ -52,7 +53,14 @@ var ActionSheet = React.forwardRef(function (props, ref) {
             setIsScrollEnabled(false);
         }
         return height;
-    }, [styles, cancelButtonIndex, message, options, title]);
+    }, [
+        styles,
+        cancelButtonIndex,
+        message,
+        options,
+        title,
+        setIsScrollEnabled,
+    ]);
     var combinedStyles = React.useMemo(function () {
         return Object.fromEntries(Object.entries(defaultStyles).map(function (_a) {
             var key = _a[0], value = _a[1];
@@ -66,7 +74,6 @@ var ActionSheet = React.forwardRef(function (props, ref) {
         }));
     }, [styles]);
     var animation = React.useState(new Animated.Value(translateY))[0];
-    var _b = React.useState(false), isScrollEnabled = _b[0], setIsScrollEnabled = _b[1];
     var handleCancel = React.useCallback(function () {
         setIsVisible(false);
     }, []);
