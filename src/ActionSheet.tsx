@@ -11,8 +11,8 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import {PLATFORM_IS_IOS} from 'platform';
-import defaultStyles, {ActionSheetStyles} from 'styles';
+import {PLATFORM_IS_IOS} from './platform';
+import defaultStyles, {ActionSheetStyles} from './styles';
 import {ReactElement} from 'react';
 
 const WARN_COLOR: string = '#FF3B30';

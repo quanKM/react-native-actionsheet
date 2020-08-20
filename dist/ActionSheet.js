@@ -11,8 +11,8 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from 'react';
 import { ActionSheetIOS, Animated, Dimensions, Easing, Modal, ScrollView, Text, TouchableHighlight, View, } from 'react-native';
-import { PLATFORM_IS_IOS } from 'platform';
-import defaultStyles from 'styles';
+import { PLATFORM_IS_IOS } from './platform';
+import defaultStyles from './styles';
 var WARN_COLOR = '#FF3B30';
 var MAX_HEIGHT = Dimensions.get('window').height * 0.7;
 var ActionSheet = React.forwardRef(function (props, ref) {

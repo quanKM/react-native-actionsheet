@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ActionSheetStyles } from 'styles';
+import { ActionSheetStyles } from './styles';
 import { ReactElement } from 'react';
 export interface ActionSheetProps {
     /**
